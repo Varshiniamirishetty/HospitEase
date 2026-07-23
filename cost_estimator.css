@@ -1,0 +1,221 @@
+/* Cost Estimator Styles */
+
+/* Map Container */
+#cost-map-container {
+    height: 500px;
+    width: 100%;
+    margin: 20px 0;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+}
+
+#cost-map {
+    height: 100%;
+    width: 100%;
+}
+
+/* Cost Estimator Tools */
+.cost-estimator-tools {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: var(--box-shadow);
+}
+
+.cost-estimator-tools .search-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+}
+
+.cost-estimator-tools .procedure-selector {
+    flex: 1;
+    min-width: 250px;
+}
+
+.cost-estimator-tools select {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    outline: none;
+}
+
+.cost-estimator-tools .radius-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cost-estimator-tools .radius-selector select {
+    width: auto;
+}
+
+.cost-estimator-tools .search-box {
+    display: flex;
+    flex: 1;
+    min-width: 250px;
+}
+
+.cost-estimator-tools input[type="text"] {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+    font-size: 1rem;
+    outline: none;
+}
+
+.cost-estimator-tools .search-box .btn-primary {
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+/* Hospital Cost List */
+.hospital-cost-container {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.hospital-cost-container h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--text-dark);
+    font-size: 1.5rem;
+}
+
+.hospital-cost-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.hospital-cost-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hospital-cost-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.hospital-cost-card h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.hospital-cost-estimate {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.hospital-cost-info {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 5px;
+}
+
+.hospital-tier {
+    display: inline-block;
+    background-color: #f1c40f;
+    color: #333;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+}
+
+.view-on-map-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.view-on-map-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.cost-info-section {
+    padding: 60px 0;
+    background-color: #f9f9f9;
+}
+
+.cost-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.cost-info-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 30px;
+    box-shadow: var(--box-shadow);
+    text-align: center;
+}
+
+.cost-info-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.cost-info-card h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--text-dark);
+}
+
+.cost-info-card p {
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .cost-estimator-tools .search-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .cost-estimator-tools .radius-selector {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .cost-estimator-tools .btn {
+        width: 100%;
+    }
+    
+    .hospital-cost-list {
+        grid-template-columns: 1fr;
+    }
+}
