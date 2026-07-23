@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HospitEase - Find Hospitals Near You</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin=""/>
+    
+    <!-- Leaflet Geocoder CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html">
+                    <span class="logo-text">Hospit<span class="logo-highlight">Ease</span></span>
+                </a>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="#map-section" class="active">Find Hospitals</a></li>
+                <li><a href="#search-tools-section">Search Tools</a></li>
+                <li><a href="cost-estimator.html">Cost Estimator</a></li>
+                <li><a href="#about-section">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+               
+            </ul>
+            <div class="navbar-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Status Message -->
+    <div id="status-message" class="status-message">
+        <p>Welcome to HospitEase! Allow location access to find hospitals near you.</p>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Find the Right Hospital When You Need It Most</h1>
+            <p>HospitEase helps you locate nearby hospitals, filter by medical departments, and get directions in emergencies.</p>
+            <div class="hero-buttons">
+                <a href="#map-section" class="btn btn-primary">
+                    <i class="fas fa-map-marker-alt"></i> Find Hospitals
+                </a>
+                <a href="#search-tools-section" class="btn btn-secondary">
+                    <i class="fas fa-search"></i> Search Tools
+                </a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80" alt="Hospital Building">
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h3>Find Nearby Hospitals</h3>
+                    <p>Quickly locate hospitals near your current location or any address you search for.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <h3>Department Search</h3>
+                    <p>Find hospitals with specific departments based on your symptoms or medical needs.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-first-aid"></i>
+                    </div>
+                    <h3>First Aid Information</h3>
+                    <p>Access basic first aid instructions for common emergencies while on your way to the hospital.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section id="map-section" class="map-section">
+        <div class="container">
+            <h2 class="section-title">Find Hospitals Near You</h2>
+            <div id="map-container">
+                <div id="map"></div>
+            </div>
+            
+            <!-- Nearest Hospitals Container -->
+            <div id="nearest-hospitals-container" class="nearest-hospitals-container">
+                <h3>Nearest Hospitals</h3>
+                <div id="nearest-hospitals-list" class="nearest-hospitals-list">
+                    <!-- Hospital cards will be added here dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Tools Section -->
+    <section id="search-tools-section" class="search-tools-section">
+        <div class="container">
+            <h2 class="section-title">Search Tools</h2>
+            <div class="search-tools-grid">
+                <div class="search-tool-card">
+                    <h3><i class="fas fa-map-marker-alt"></i> Search by Location</h3>
+                    <div class="search-container">
+                        <div class="search-box">
+                            <input type="text" id="location-search" placeholder="Enter a location...">
+                            <button id="search-btn" class="btn btn-primary">Search</button>
+                        </div>
+                        <div class="radius-selector">
+                            <label for="search-radius">Search Radius (km):</label>
+                            <select id="search-radius">
+                                <option value="1000">1</option>
+                                <option value="2000">2</option>
+                                <option value="5000" selected>5</option>
+                                <option value="10000">10</option>
+                                <option value="20000">20</option>
+                            </select>
+                        </div>
+                        <button id="use-my-location-btn" class="btn btn-secondary">
+                            <i class="fas fa-location-dot"></i> Use My Location
+                        </button>
+                        <button id="refresh-btn" class="btn btn-secondary">
+                            <i class="fas fa-rotate"></i> Refresh Results
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="search-tool-card">
+                    <h3><i class="fas fa-heartbeat"></i> Search by Symptom</h3>
+                    <div class="symptom-selector">
+                        <select id="symptom-dropdown">
+                            <option value="">Select a symptom...</option>
+                            <option value="Chest Pain">Chest Pain</option>
+                            <option value="Fracture">Fracture</option>
+                            <option value="Fever">Fever</option>
+                            <option value="Skin Rash">Skin Rash</option>
+                            <option value="Toothache">Toothache</option>
+                            <option value="Eye Irritation">Eye Irritation</option>
+                            <option value="Stomach Ache">Stomach Ache</option>
+                            <option value="Joint Pain">Joint Pain</option>
+                            <option value="Back Pain">Back Pain</option>
+                            <option value="Cold / Cough">Cold / Cough</option>
+                            <option value="Anxiety">Anxiety</option>
+                            <option value="Pregnancy Checkup">Pregnancy Checkup</option>
+                            <option value="Seizures">Seizures</option>
+                            <option value="Headache / Migraine">Headache / Migraine</option>
+                        </select>
+                        <button id="find-by-symptom-btn" class="btn btn-primary">Find Hospitals</button>
+                        <div id="department-info" class="department-info hidden">
+                            <p>You should look for a hospital with a <strong id="department-name"></strong> department.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="search-tool-card">
+                    <h3><i class="fas fa-kit-medical"></i> First Aid Guide</h3>
+                    <div class="first-aid-selector">
+                        <select id="first-aid-dropdown">
+                            <option value="">Select emergency situation...</option>
+                            <option value="Chest Pain">Chest Pain</option>
+                            <option value="Fracture">Fracture</option>
+                            <option value="Fever">Fever</option>
+                            <option value="Burn">Burn</option>
+                            <option value="Snake Bite">Snake Bite</option>
+                            <option value="Bleeding">Bleeding</option>
+                            <option value="Difficulty Breathing">Difficulty Breathing</option>
+                            <option value="Head Injury">Head Injury</option>
+                            <option value="Vomiting">Vomiting</option>
+                            <option value="Fainting">Fainting</option>
+                        </select>
+                        <div id="first-aid-info" class="first-aid-info hidden">
+                            <div class="first-aid-header">
+                                <h4 id="first-aid-symptom"></h4>
+                                <p class="first-aid-department">Related Department: <span id="first-aid-department-name"></span></p>
+                            </div>
+                            <div class="first-aid-steps">
+                                <h5>First Aid Steps:</h5>
+                                <ol id="first-aid-steps-list"></ol>
+                            </div>
+                            <div class="first-aid-disclaimer">
+                                <p><strong>Important:</strong> This is basic first aid information only. Always seek professional medical help in emergencies.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hospitals List Section -->
+    <section class="hospitals-section">
+        <div class="container">
+            <h2 class="section-title">Hospital List</h2>
+            <div id="hospital-list-container">
+                <div id="hospital-list" class="hospital-list">
+                    <!-- Hospital cards will be added here dynamically -->
+                    <p class="loading-text">Please search for a location or allow location access to see hospitals.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about-section" class="about-section">
+        <div class="container">
+            <h2 class="section-title">About HospitEase</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>HospitEase is a web application designed to help people quickly find hospitals in their vicinity, especially during emergencies. Our mission is to reduce the time it takes to locate appropriate medical facilities when every second counts.</p>
+                    <p>Using real-time location data and OpenStreetMap's extensive database, HospitEase provides accurate information about nearby hospitals, including contact details, available departments, and emergency services.</p>
+                    <p>We also offer symptom-based search to help you find the right medical department for your specific needs, along with basic first aid information while you're on your way to get professional help.</p>
+                </div>
+                <div class="about-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">100K+</div>
+                        <div class="stat-label">Hospitals</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Countries</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Availability</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">Free</div>
+                        <div class="stat-label">Service</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">Hospit<span class="logo-highlight">Ease</span></span>
+                    <p>Finding the right medical care when you need it most.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Quick Links</h4>
+                        <ul>
+                            <li><a href="#map-section">Find Hospitals</a></li>
+                            <li><a href="#search-tools-section">Search Tools</a></li>
+                            <li><a href="#about-section">About</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Medical Directory</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Disclaimer</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 HospitEase. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""></script>
+    
+    <!-- Leaflet Geocoder JS -->
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/app.js"></script>
+</body>
+</html>

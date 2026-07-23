@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Cost Estimator - HospitEase</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin=""/>
+    
+    <!-- Leaflet Geocoder CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/cost-estimator.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html">
+                    <span class="logo-text">Hospit<span class="logo-highlight">Ease</span></span>
+                </a>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="index.html">Find Hospitals</a></li>
+                <li><a href="index.html#search-tools-section">Search Tools</a></li>
+                <li><a href="index.html#about-section">About</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li><a href="cost-estimator.html" class="active">Cost Estimator</a></li>
+            </ul>
+            <div class="navbar-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Status Message -->
+    <div id="cost-status" class="status-message">
+        <p>Select a medical procedure to estimate costs at nearby hospitals.</p>
+    </div>
+
+    <!-- Cost Estimator Section -->
+    <section class="cost-estimator-section">
+        <div class="container">
+            <h2 class="section-title">Medical Cost Estimator</h2>
+            <div class="cost-estimator-description">
+                <p>Compare estimated costs for common medical procedures at hospitals near you.</p>
+            </div>
+            
+            <!-- Cost Estimator Tools -->
+            <div class="cost-estimator-tools">
+                <div class="search-container">
+                    <div class="procedure-selector">
+                        <select id="procedureSelect">
+                            <option value="">-- Select Medical Procedure --</option>
+                            <option value="General Consultation">General Consultation</option>
+                            <option value="MRI Scan">MRI Scan</option>
+                            <option value="CT Scan">CT Scan</option>
+                            <option value="Ultrasound">Ultrasound</option>
+                            <option value="Blood Test Panel">Blood Test Panel</option>
+                            <option value="ECG">ECG</option>
+                            <option value="X-Ray">X-Ray</option>
+                            <option value="Knee Replacement">Knee Replacement</option>
+                            <option value="Cataract Surgery">Cataract Surgery</option>
+                            <option value="Angioplasty">Angioplasty</option>
+                            <option value="Appendectomy">Appendectomy</option>
+                            <option value="Dialysis (per session)">Dialysis (per session)</option>
+                            <option value="Cesarean Delivery">Cesarean Delivery</option>
+                        </select>
+                    </div>
+                    <div class="radius-selector">
+                        <label for="cost-search-radius">Search Radius (km):</label>
+                        <select id="cost-search-radius">
+                            <option value="5000" selected>5</option>
+                            <option value="10000">10</option>
+                            <option value="15000">15</option>
+                            <option value="20000">20</option>
+                        </select>
+                    </div>
+                    <button id="show-hospitals-btn" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Show Hospitals
+                    </button>
+                    <button id="cost-use-my-location-btn" class="btn btn-secondary">
+                        <i class="fas fa-location-dot"></i> Use My Location
+                    </button>
+                    <div class="search-box">
+                        <input type="text" id="cost-location-search" placeholder="Enter a location...">
+                        <button id="cost-search-btn" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="cost-map-container">
+                <div id="cost-map"></div>
+            </div>
+            
+            <!-- Hospital Cost List Container -->
+            <div id="hospital-cost-container" class="hospital-cost-container hidden">
+                <h3>Hospital Cost Comparison</h3>
+                <div id="hospital-cost-list" class="hospital-cost-list">
+                    <!-- Hospital cost cards will be added here dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cost Information Section -->
+    <section class="cost-info-section">
+        <div class="container">
+            <h2 class="section-title">Understanding Medical Costs</h2>
+            <div class="cost-info-grid">
+                <div class="cost-info-card">
+                    <div class="cost-info-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <h3>Cost Estimates</h3>
+                    <p>The costs shown are estimates based on typical pricing for each procedure. Actual costs may vary based on your specific medical needs, insurance coverage, and hospital policies.</p>
+                </div>
+                <div class="cost-info-card">
+                    <div class="cost-info-icon">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                    <h3>Hospital Tiers</h3>
+                    <p>Hospitals are categorized into tiers based on their facilities, specializations, and services. Higher-tier hospitals may charge more but often provide more comprehensive care.</p>
+                </div>
+                <div class="cost-info-card">
+                    <div class="cost-info-icon">
+                        <i class="fas fa-notes-medical"></i>
+                    </div>
+                    <h3>What's Included</h3>
+                    <p>Cost estimates typically include the basic procedure fee. Additional costs may apply for consultations, medications, follow-up visits, or specialized care requirements.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">Hospit<span class="logo-highlight">Ease</span></span>
+                    <p>Finding the right medical care when you need it most.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Quick Links</h4>
+                        <ul>
+                            <li><a href="index.html">Find Hospitals</a></li>
+                            <li><a href="cost-estimator.html">Cost Estimator</a></li>
+                            <li><a href="index.html#about-section">About</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Disclaimer</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 HospitEase. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""></script>
+    
+    <!-- Leaflet Geocoder JS -->
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    
+    <!-- Cost Estimator JS -->
+    <script src="js/cost-estimator.js"></script>
+</body>
+</html>
